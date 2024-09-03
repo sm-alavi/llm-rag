@@ -26,7 +26,26 @@ services:
       - ./docker/db/data:/var/lib/postgresql/data:rw
     ports:
       - '5432:5432'
+  
+  pgadmin:
+    image: docker.arvancloud.ir/dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mahdi.sma@gmail.command
+      PGADMIN_DEFAULT_PASSWORD: passwordq@
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "8080:8080"
+    networks:
+      - pgvector
+    restart: unless-stopped
+
+networks:
+  pgvector:
+    driver: bridge
 
 volumes:
   minio_storage: {}
-  db-data: { }
+  db-data: {}
+  pgadmin: {}
