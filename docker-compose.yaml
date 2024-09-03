@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  minio:
+    image: docker.arvancloud.ir/minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: VEWxBSnQWS5fQJwsF5szwFrtwnwfmpFR
+    command: server --console-address ":9001" /data
+  
+  createbucket:
+    image: docker.arvancloud.ir/minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "/usr/bin/mc config host add --api s3v4 s3 http://${MINIO_STORAGE_URL} minioadmin VEWxBSnQWS5fQJwsF5szwFrtwnwfmpFR;
+      #/usr/bin/mc rm -r --force s3/static;
+      /usr/bin/mc mb s3/static/;
+      /usr/bin/mc anonymous set download s3/static;
+       "
+
+volumes:
+  minio_storage: {}
